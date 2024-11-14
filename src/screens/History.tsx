@@ -2,7 +2,7 @@ import { HistoryCard } from '@components/HistoryCard';
 import { ScreenHeader } from '@components/ScreenHeader';
 import { Heading, Text, VStack } from '@gluestack-ui/themed';
 import { useState } from 'react';
-import { SectionList } from 'react-native';
+import { SectionList, StyleSheet } from 'react-native';
 
 export function History() {
   const [exercises, setExercises] = useState([
@@ -21,7 +21,7 @@ export function History() {
       <ScreenHeader title="Histórico de Exercícios" />
       <SectionList
         sections={exercises}
-        keyExtractor={(item) => item}
+        keyExtractor={item => item}
         renderItem={() => <HistoryCard />}
         renderSectionHeader={({ section }) => (
           <Heading
@@ -34,9 +34,9 @@ export function History() {
             {section.title}
           </Heading>
         )}
-        style={{ paddingHorizontal: 32 }}
+        style={styles.containerExercises}
         contentContainerStyle={
-          exercises.length === 0 && { flex: 1, justifyContent: 'center' }
+          exercises.length === 0 && styles.contentContainerExercises
         }
         ListEmptyComponent={EmptySection}
         showsVerticalScrollIndicator={false}
@@ -50,3 +50,13 @@ const EmptySection = () => (
     Não há exercícios registrados ainda. {'\n'} Vamos fazer exercícios hoje ?
   </Text>
 );
+
+const styles = StyleSheet.create({
+  contentContainerExercises: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  containerExercises: {
+    paddingHorizontal: 32,
+  },
+});

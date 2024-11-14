@@ -4,7 +4,17 @@
     "@react-native",
     "plugin:prettier/recommended"
   ],
+  "plugins": [
+    "import"
+  ],
   "rules": {
+    "sort-imports": [
+      "error",
+      {
+        "ignoreCase": true,
+        "ignoreDeclarationSort": true
+      }
+    ],
     "prettier/prettier": "error",
     "react/react-in-jsx-scope": "off",
     "@typescript-eslint/no-unused-vars": "warn"

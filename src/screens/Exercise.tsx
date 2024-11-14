@@ -1,13 +1,13 @@
 import {
-  VStack,
-  Icon,
-  HStack,
-  Heading,
-  Text,
-  Image,
   Box,
+  Heading,
+  HStack,
+  Icon,
+  Image,
+  Text,
+  VStack,
 } from '@gluestack-ui/themed';
-import { ScrollView, TouchableOpacity } from 'react-native';
+import { ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 
 import { ArrowLeft } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -56,7 +56,7 @@ export function Exercise() {
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 32 }}
+        contentContainerStyle={styles.contentContainer}
       >
         <VStack p="$8">
           <Image
@@ -99,3 +99,9 @@ export function Exercise() {
     </VStack>
   );
 }
+
+const styles = StyleSheet.create({
+  contentContainer: {
+    paddingBottom: 32,
+  },
+});

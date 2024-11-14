@@ -1,7 +1,7 @@
-import { Image } from "@gluestack-ui/themed";
-import { ComponentProps } from "react";
+import { Image } from '@gluestack-ui/themed';
+import { ComponentProps } from 'react';
 
-type Props = ComponentProps<typeof Image>
+type Props = ComponentProps<typeof Image>;
 
 export function UserPhoto({ ...rest }: Props) {
   return (
@@ -12,5 +12,5 @@ export function UserPhoto({ ...rest }: Props) {
       backgroundColor="$gray500"
       {...rest}
     />
-  )
+  );
 }

@@ -5,7 +5,7 @@ import { Heading, HStack, Text, VStack } from '@gluestack-ui/themed';
 import { useNavigation } from '@react-navigation/native';
 import { AppNavigatorRoutesProps } from '@routes/app.routes';
 import { useState } from 'react';
-import { FlatList } from 'react-native';
+import { FlatList, StyleSheet } from 'react-native';
 
 export function Home() {
   const [exercises, setExercises] = useState([
@@ -34,7 +34,7 @@ export function Home() {
 
       <FlatList
         data={groups}
-        keyExtractor={(item) => item}
+        keyExtractor={item => item}
         renderItem={({ item }) => (
           <Group
             name={item}
@@ -44,8 +44,8 @@ export function Home() {
         )}
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ paddingHorizontal: 32 }}
-        style={{ marginVertical: 40, maxHeight: 44, minHeight: 44 }}
+        contentContainerStyle={styles.contentContainerGroup}
+        style={styles.containerGroup}
       />
 
       <VStack px="$8" flex={1}>
@@ -60,14 +60,28 @@ export function Home() {
 
         <FlatList
           data={exercises}
-          keyExtractor={(item) => item}
+          keyExtractor={item => item}
           renderItem={() => (
             <ExerciseCard onPress={handleOpenExerciseDetails} />
           )}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 20 }}
+          contentContainerStyle={styles.contentContainerExercises}
         />
       </VStack>
     </VStack>
   );
 }
+
+const styles = StyleSheet.create({
+  contentContainerGroup: {
+    paddingHorizontal: 32,
+  },
+  containerGroup: {
+    marginVertical: 40,
+    maxHeight: 44,
+    minHeight: 44,
+  },
+  contentContainerExercises: {
+    paddingBottom: 20,
+  },
+});

@@ -4,9 +4,9 @@ import {
   Image,
   ScrollView,
   Text,
-  useToast,
   Toast,
   ToastTitle,
+  useToast,
   VStack,
 } from '@gluestack-ui/themed';
 import * as yup from 'yup';

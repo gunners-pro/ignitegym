@@ -3,7 +3,7 @@ import { Input } from '@components/Input';
 import { ScreenHeader } from '@components/ScreenHeader';
 import { UserPhoto } from '@components/UserPhoto';
 import { Center, Heading, Text, useToast, VStack } from '@gluestack-ui/themed';
-import { ScrollView, TouchableOpacity } from 'react-native';
+import { ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import { useState } from 'react';
@@ -58,7 +58,7 @@ export function Profile() {
     <VStack flex={1}>
       <ScreenHeader title="Perfil" />
 
-      <ScrollView contentContainerStyle={{ paddingBottom: 36 }}>
+      <ScrollView contentContainerStyle={styles.contentContainer}>
         <Center mt="$6" px="$10">
           <UserPhoto
             source={{ uri: userPhoto }}
@@ -109,3 +109,9 @@ export function Profile() {
     </VStack>
   );
 }
+
+const styles = StyleSheet.create({
+  contentContainer: {
+    paddingBottom: 36,
+  },
+});

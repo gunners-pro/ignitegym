@@ -1,9 +1,9 @@
 import {
-  Input as GlueInput,
-  InputField,
   FormControl,
   FormControlError,
   FormControlErrorText,
+  Input as GlueInput,
+  InputField,
 } from '@gluestack-ui/themed';
 import { ComponentProps } from 'react';
 

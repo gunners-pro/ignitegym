@@ -1,9 +1,9 @@
 import {
+  Icon,
+  Pressable,
+  Toast,
   ToastDescription,
   ToastTitle,
-  Toast,
-  Pressable,
-  Icon,
   VStack,
 } from '@gluestack-ui/themed';
 import { X } from 'lucide-react-native';
