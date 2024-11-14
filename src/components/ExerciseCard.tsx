@@ -1,3 +1,5 @@
+import { TouchableOpacity, TouchableOpacityProps } from 'react-native';
+
 import {
   Heading,
   HStack,
@@ -6,7 +8,6 @@ import {
   Text,
   VStack,
 } from '@gluestack-ui/themed';
-import { TouchableOpacity, TouchableOpacityProps } from 'react-native';
 import { ChevronRight } from 'lucide-react-native';
 
 type Props = TouchableOpacityProps;

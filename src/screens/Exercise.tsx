@@ -1,3 +1,5 @@
+import { ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+
 import {
   Box,
   Heading,
@@ -7,16 +9,14 @@ import {
   Text,
   VStack,
 } from '@gluestack-ui/themed';
-import { ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
-
-import { ArrowLeft } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
-import { AppNavigatorRoutesProps } from '@routes/app.routes';
+import { ArrowLeft } from 'lucide-react-native';
 
-import SeriesSvg from '@assets/series.svg';
-import RepetitionSvg from '@assets/repetitions.svg';
 import BodySvg from '@assets/body.svg';
+import RepetitionSvg from '@assets/repetitions.svg';
+import SeriesSvg from '@assets/series.svg';
 import { Button } from '@components/Button';
+import { AppNavigatorRoutesProps } from '@routes/app.routes';
 
 export function Exercise() {
   const navigator = useNavigation<AppNavigatorRoutesProps>();

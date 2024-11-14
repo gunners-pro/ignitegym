@@ -1,8 +1,10 @@
-import { HistoryCard } from '@components/HistoryCard';
-import { ScreenHeader } from '@components/ScreenHeader';
-import { Heading, Text, VStack } from '@gluestack-ui/themed';
 import { useState } from 'react';
 import { SectionList, StyleSheet } from 'react-native';
+
+import { Heading, Text, VStack } from '@gluestack-ui/themed';
+
+import { HistoryCard } from '@components/HistoryCard';
+import { ScreenHeader } from '@components/ScreenHeader';
 
 export function History() {
   const [exercises, setExercises] = useState([

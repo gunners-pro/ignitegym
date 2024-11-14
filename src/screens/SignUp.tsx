@@ -1,3 +1,5 @@
+import { StyleSheet } from 'react-native';
+
 import {
   Center,
   Heading,
@@ -9,15 +11,15 @@ import {
   useToast,
   VStack,
 } from '@gluestack-ui/themed';
-import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useNavigation } from '@react-navigation/native';
+import { Controller, useForm } from 'react-hook-form';
+import * as yup from 'yup';
+
 import BackgroundImg from '@assets/background.png';
 import Logo from '@assets/logo.svg';
-import { Input } from '@components/Input';
 import { Button } from '@components/Button';
-import { useNavigation } from '@react-navigation/native';
-import { StyleSheet } from 'react-native';
-import { Controller, useForm } from 'react-hook-form';
+import { Input } from '@components/Input';
 import { api } from '@services/api';
 import { AppError } from '@utils/AppError';
 

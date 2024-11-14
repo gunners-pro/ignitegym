@@ -1,3 +1,5 @@
+import { StyleSheet } from 'react-native';
+
 import {
   Center,
   Heading,
@@ -6,14 +8,13 @@ import {
   Text,
   VStack,
 } from '@gluestack-ui/themed';
+import { useNavigation } from '@react-navigation/native';
 
 import BackgroundImg from '@assets/background.png';
 import Logo from '@assets/logo.svg';
-import { Input } from '@components/Input';
 import { Button } from '@components/Button';
-import { useNavigation } from '@react-navigation/native';
+import { Input } from '@components/Input';
 import { AuthNavigatorRoutesProps } from '@routes/auth.routes';
-import { StyleSheet } from 'react-native';
 
 export function SignIn() {
   const navigator = useNavigation<AuthNavigatorRoutesProps>();

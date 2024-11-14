@@ -1,13 +1,15 @@
+import { useState } from 'react';
+import { ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+
+import { Center, Heading, Text, useToast, VStack } from '@gluestack-ui/themed';
+import * as FileSystem from 'expo-file-system';
+import * as ImagePicker from 'expo-image-picker';
+
 import { Button } from '@components/Button';
 import { Input } from '@components/Input';
 import { ScreenHeader } from '@components/ScreenHeader';
-import { UserPhoto } from '@components/UserPhoto';
-import { Center, Heading, Text, useToast, VStack } from '@gluestack-ui/themed';
-import { ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
-import * as FileSystem from 'expo-file-system';
-import { useState } from 'react';
 import { ToastMessage } from '@components/ToastMessage';
+import { UserPhoto } from '@components/UserPhoto';
 
 export function Profile() {
   const [userPhoto, setUserPhoto] = useState(

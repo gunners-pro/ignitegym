@@ -1,3 +1,5 @@
+import { ComponentProps } from 'react';
+
 import {
   FormControl,
   FormControlError,
@@ -5,7 +7,6 @@ import {
   Input as GlueInput,
   InputField,
 } from '@gluestack-ui/themed';
-import { ComponentProps } from 'react';
 
 type Props = ComponentProps<typeof InputField> & {
   errorMessage?: string | null;

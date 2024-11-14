@@ -1,11 +1,13 @@
+import { useState } from 'react';
+import { FlatList, StyleSheet } from 'react-native';
+
+import { Heading, HStack, Text, VStack } from '@gluestack-ui/themed';
+import { useNavigation } from '@react-navigation/native';
+
 import { ExerciseCard } from '@components/ExerciseCard';
 import { Group } from '@components/Group';
 import { HomeHeader } from '@components/HomeHeader';
-import { Heading, HStack, Text, VStack } from '@gluestack-ui/themed';
-import { useNavigation } from '@react-navigation/native';
 import { AppNavigatorRoutesProps } from '@routes/app.routes';
-import { useState } from 'react';
-import { FlatList, StyleSheet } from 'react-native';
 
 export function Home() {
   const [exercises, setExercises] = useState([

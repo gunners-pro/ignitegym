@@ -1,5 +1,6 @@
-import { Image } from '@gluestack-ui/themed';
 import { ComponentProps } from 'react';
+
+import { Image } from '@gluestack-ui/themed';
 
 type Props = ComponentProps<typeof Image>;
 
