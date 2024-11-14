@@ -2,6 +2,7 @@ import { createContext, ReactNode, useEffect, useState } from 'react';
 
 import { UserDTO } from '@dtos/UserDTO';
 import { api } from '@services/api';
+import { storageAuthTokenSave } from '@storage/storageAuthToken';
 import {
   storageUserGet,
   storageUserSave,
@@ -25,13 +26,20 @@ export const AuthContext = createContext<AuthContextDataProps>(
 export function AuthContextProvider({ children }: AuthContextProviderProps) {
   const [user, setUser] = useState<UserDTO>({} as UserDTO);
 
+  async function storageUserAndToken(userStorage: UserDTO, token: string) {
+    api.defaults.headers.common.Authorization = `Bearer ${token}`;
+
+    await storageUserSave(userStorage);
+    await storageAuthTokenSave(token);
+    setUser(userStorage);
+  }
+
   async function signIn(email: string, password: string) {
     try {
       const { data } = await api.post('/sessions', { email, password });
 
-      if (data.user) {
-        setUser(data.user);
-        storageUserSave(data.user);
+      if (data.user && data.token) {
+        storageUserAndToken(data.user, data.token);
       }
     } catch (error) {
       throw error;
