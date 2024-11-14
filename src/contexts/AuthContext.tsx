@@ -1,8 +1,18 @@
-import { createContext, ReactNode, useEffect, useState } from 'react';
+import {
+  createContext,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 
 import { UserDTO } from '@dtos/UserDTO';
 import { api } from '@services/api';
-import { storageAuthTokenSave } from '@storage/storageAuthToken';
+import {
+  storageAuthTokenGet,
+  storageAuthTokenRemove,
+  storageAuthTokenSave,
+} from '@storage/storageAuthToken';
 import {
   storageUserGet,
   storageUserSave,
@@ -26,11 +36,8 @@ export const AuthContext = createContext<AuthContextDataProps>(
 export function AuthContextProvider({ children }: AuthContextProviderProps) {
   const [user, setUser] = useState<UserDTO>({} as UserDTO);
 
-  async function storageUserAndToken(userStorage: UserDTO, token: string) {
+  async function UserAndTokenUpdate(userStorage: UserDTO, token: string) {
     api.defaults.headers.common.Authorization = `Bearer ${token}`;
-
-    await storageUserSave(userStorage);
-    await storageAuthTokenSave(token);
     setUser(userStorage);
   }
 
@@ -39,7 +46,10 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
       const { data } = await api.post('/sessions', { email, password });
 
       if (data.user && data.token) {
-        storageUserAndToken(data.user, data.token);
+        await storageUserSave(data.user);
+        await storageAuthTokenSave(data.token);
+
+        UserAndTokenUpdate(data.user, data.token);
       }
     } catch (error) {
       throw error;
@@ -50,21 +60,23 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     try {
       setUser({} as UserDTO);
       await storateUserRemove();
+      await storageAuthTokenRemove();
     } catch (error) {
       throw error;
     }
   }
 
-  async function loadUserData() {
+  const loadUserData = useCallback(async () => {
     const userLogged = await storageUserGet();
-    if (userLogged) {
-      setUser(userLogged);
+    const token = await storageAuthTokenGet();
+    if (userLogged && token) {
+      UserAndTokenUpdate(userLogged, token);
     }
-  }
+  }, []);
 
   useEffect(() => {
     loadUserData();
-  }, []);
+  }, [loadUserData]);
 
   return (
     <AuthContext.Provider value={{ user, signIn, signOut }}>
