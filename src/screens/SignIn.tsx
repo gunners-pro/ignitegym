@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { StyleSheet } from 'react-native';
 
 import {
@@ -6,6 +7,9 @@ import {
   Image,
   ScrollView,
   Text,
+  Toast,
+  ToastTitle,
+  useToast,
   VStack,
 } from '@gluestack-ui/themed';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -17,7 +21,9 @@ import BackgroundImg from '@assets/background.png';
 import Logo from '@assets/logo.svg';
 import { Button } from '@components/Button';
 import { Input } from '@components/Input';
+import { useAuth } from '@hooks/useAuth';
 import { AuthNavigatorRoutesProps } from '@routes/auth.routes';
+import { AppError } from '@utils/AppError';
 
 type FormDataProps = {
   email: string;
@@ -33,15 +39,36 @@ const signInSchema = yup.object({
 });
 
 export function SignIn() {
+  const [isLoading, setIsLoading] = useState(false);
   const navigator = useNavigation<AuthNavigatorRoutesProps>();
+  const { signIn } = useAuth();
+  const toast = useToast();
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm<FormDataProps>({ resolver: yupResolver(signInSchema) });
 
-  function handleSignIn({ email, password }: FormDataProps) {
-    console.log({ email, password });
+  async function handleSignIn({ email, password }: FormDataProps) {
+    try {
+      setIsLoading(true);
+      await signIn(email, password);
+    } catch (error) {
+      const isAppError = error instanceof AppError;
+      const title = isAppError
+        ? error.message
+        : 'Não foi possível entrar. Tente novamente mais tarde.';
+
+      toast.show({
+        placement: 'top',
+        render: () => (
+          <Toast bg="$red500" action="error" mt="$16">
+            <ToastTitle color="$white">{title}</ToastTitle>
+          </Toast>
+        ),
+      });
+      setIsLoading(false);
+    }
   }
 
   function handleNewAccount() {
@@ -101,7 +128,12 @@ export function SignIn() {
               )}
             />
 
-            <Button title="Acessar" onPress={handleSubmit(handleSignIn)} />
+            <Button
+              title="Acessar"
+              onPress={handleSubmit(handleSignIn)}
+              isLoading={isLoading}
+              disabled={isLoading}
+            />
           </Center>
 
           <Center flex={1} justifyContent="flex-end" mt="$4">
