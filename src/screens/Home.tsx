@@ -10,30 +10,56 @@ import {
   useToast,
   VStack,
 } from '@gluestack-ui/themed';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 import { ExerciseCard } from '@components/ExerciseCard';
 import { Group } from '@components/Group';
 import { HomeHeader } from '@components/HomeHeader';
+import { Loading } from '@components/Loading';
+import { ExerciseDTO } from '@dtos/ExerciseDTO';
 import { AppNavigatorRoutesProps } from '@routes/app.routes';
 import { api } from '@services/api';
 import { AppError } from '@utils/AppError';
 
 export function Home() {
-  const [exercises, setExercises] = useState([
-    'Puxada frontal',
-    'Remada curvada',
-    'Remada unilateral',
-    'Levantamento terra',
-  ]);
+  const [exercises, setExercises] = useState<ExerciseDTO[]>([]);
   const [groups, setGroups] = useState<string[]>([]);
-  const [groupSelected, setGroupSelected] = useState('Costas');
+  const [groupSelected, setGroupSelected] = useState('costas');
+  const [isLoading, setIsLoading] = useState(true);
   const toast = useToast();
   const navigator = useNavigation<AppNavigatorRoutesProps>();
 
   function handleOpenExerciseDetails() {
     navigator.navigate('exercise');
   }
+
+  const fetchExercisesByGroup = useCallback(() => {
+    const fetchExercise = async () => {
+      try {
+        setIsLoading(true);
+        const response = await api.get(`/exercises/bygroup/${groupSelected}`);
+        setExercises(response.data);
+      } catch (error) {
+        const isAppError = error instanceof AppError;
+        const title = isAppError
+          ? error.message
+          : 'Não foi possível carregar os exercícios';
+
+        toast.show({
+          placement: 'top',
+          render: () => (
+            <Toast bg="$red500" action="error" mt="$16">
+              <ToastTitle color="$white">{title}</ToastTitle>
+            </Toast>
+          ),
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchExercise();
+  }, [groupSelected, toast]);
 
   const fetchGroups = useCallback(async () => {
     try {
@@ -60,6 +86,8 @@ export function Home() {
     fetchGroups();
   }, [fetchGroups]);
 
+  useFocusEffect(fetchExercisesByGroup);
+
   return (
     <VStack flex={1}>
       <HomeHeader />
@@ -80,26 +108,30 @@ export function Home() {
         style={styles.containerGroup}
       />
 
-      <VStack px="$8" flex={1}>
-        <HStack justifyContent="space-between" alignItems="center" mb="$5">
-          <Heading color="$gray200" fontSize="$md" fontFamily="$heading">
-            Exercícios
-          </Heading>
-          <Text color="$gray200" fontSize="$sm" fontFamily="$body">
-            {exercises.length}
-          </Text>
-        </HStack>
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <VStack px="$8" flex={1}>
+          <HStack justifyContent="space-between" alignItems="center" mb="$5">
+            <Heading color="$gray200" fontSize="$md" fontFamily="$heading">
+              Exercícios
+            </Heading>
+            <Text color="$gray200" fontSize="$sm" fontFamily="$body">
+              {exercises.length}
+            </Text>
+          </HStack>
 
-        <FlatList
-          data={exercises}
-          keyExtractor={item => item}
-          renderItem={() => (
-            <ExerciseCard onPress={handleOpenExerciseDetails} />
-          )}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.contentContainerExercises}
-        />
-      </VStack>
+          <FlatList
+            data={exercises}
+            keyExtractor={item => item.id}
+            renderItem={({ item }) => (
+              <ExerciseCard onPress={handleOpenExerciseDetails} data={item} />
+            )}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.contentContainerExercises}
+          />
+        </VStack>
+      )}
     </VStack>
   );
 }
