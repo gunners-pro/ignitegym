@@ -1,3 +1,4 @@
+import { useCallback, useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 
 import {
@@ -7,22 +8,67 @@ import {
   Icon,
   Image,
   Text,
+  Toast,
+  ToastTitle,
+  useToast,
   VStack,
 } from '@gluestack-ui/themed';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { ArrowLeft } from 'lucide-react-native';
 
 import BodySvg from '@assets/body.svg';
 import RepetitionSvg from '@assets/repetitions.svg';
 import SeriesSvg from '@assets/series.svg';
 import { Button } from '@components/Button';
+import { Loading } from '@components/Loading';
+import { ExerciseDTO } from '@dtos/ExerciseDTO';
 import { AppNavigatorRoutesProps } from '@routes/app.routes';
+import { api } from '@services/api';
+import { AppError } from '@utils/AppError';
+
+type RouteParams = {
+  exerciseId: string;
+};
 
 export function Exercise() {
+  const [exercise, setExercise] = useState<ExerciseDTO>({} as ExerciseDTO);
+  const [isLoading, setIsLoading] = useState(true);
+  const route = useRoute();
+  const { exerciseId } = route.params as RouteParams;
+  const toast = useToast();
   const navigator = useNavigation<AppNavigatorRoutesProps>();
+
   function handleGoBack() {
     navigator.goBack();
   }
+
+  const fetchExerciseDetails = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const response = await api.get(`exercises/${exerciseId}`);
+      setExercise(response.data);
+    } catch (error) {
+      const isAppError = error instanceof AppError;
+      const title = isAppError
+        ? error.message
+        : 'Não foi possível carregar os detalhes do exercício';
+
+      toast.show({
+        placement: 'top',
+        render: () => (
+          <Toast bg="$red500" action="error" mt="$16">
+            <ToastTitle color="$white">{title}</ToastTitle>
+          </Toast>
+        ),
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }, [exerciseId, toast]);
+
+  useEffect(() => {
+    fetchExerciseDetails();
+  }, [fetchExerciseDetails]);
 
   return (
     <VStack flex={1}>
@@ -43,59 +89,64 @@ export function Exercise() {
             fontSize="$lg"
             flexShrink={1}
           >
-            Puxada frontal
+            {exercise.name}
           </Heading>
           <HStack alignItems="center">
             <BodySvg />
             <Text color="$gray200" ml="$1" textTransform="capitalize">
-              Costas
+              {exercise.group}
             </Text>
           </HStack>
         </HStack>
       </VStack>
 
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.contentContainer}
-      >
-        <VStack p="$8">
-          <Image
-            source={{
-              uri: 'https://p2.trrsf.com/image/fget/cf/940/0/images.terra.com/2024/01/08/806786048-istock-1408268258.jpg',
-            }}
-            alt="Imagem do exercicio"
-            mb="$3"
-            resizeMode="cover"
-            rounded="$lg"
-            w="$full"
-            h="$80"
-          />
-          <Box bg="$gray600" rounded="$md" pb="$4" px="$4">
-            <HStack
-              alignItems="center"
-              justifyContent="space-around"
-              mb="$6"
-              mt="$5"
-            >
-              <HStack>
-                <SeriesSvg />
-                <Text color="$gray200" ml="$2">
-                  3 séries
-                </Text>
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.contentContainer}
+        >
+          <VStack p="$8">
+            <Box rounded="$md" mb="$3" overflow="hidden">
+              <Image
+                source={{
+                  uri: `${api.defaults.baseURL}/exercise/demo/${exercise.demo}`,
+                }}
+                alt="Imagem do exercicio"
+                resizeMode="cover"
+                rounded="$lg"
+                w="$full"
+                h="$80"
+              />
+            </Box>
+            <Box bg="$gray600" rounded="$md" pb="$4" px="$4">
+              <HStack
+                alignItems="center"
+                justifyContent="space-around"
+                mb="$6"
+                mt="$5"
+              >
+                <HStack>
+                  <SeriesSvg />
+                  <Text color="$gray200" ml="$2">
+                    {exercise.series} séries
+                  </Text>
+                </HStack>
+
+                <HStack>
+                  <RepetitionSvg />
+                  <Text color="$gray200" ml="$2">
+                    {exercise.repetitions} repetições
+                  </Text>
+                </HStack>
               </HStack>
 
-              <HStack>
-                <RepetitionSvg />
-                <Text color="$gray200" ml="$2">
-                  12 repetições
-                </Text>
-              </HStack>
-            </HStack>
-
-            <Button title="Marcar como realizado" />
-          </Box>
-        </VStack>
-      </ScrollView>
+              <Button title="Marcar como realizado" />
+            </Box>
+          </VStack>
+        </ScrollView>
+      )}
     </VStack>
   );
 }

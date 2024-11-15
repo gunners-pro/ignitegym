@@ -24,13 +24,13 @@ import { AppError } from '@utils/AppError';
 export function Home() {
   const [exercises, setExercises] = useState<ExerciseDTO[]>([]);
   const [groups, setGroups] = useState<string[]>([]);
-  const [groupSelected, setGroupSelected] = useState('costas');
+  const [groupSelected, setGroupSelected] = useState('antebraço');
   const [isLoading, setIsLoading] = useState(true);
   const toast = useToast();
   const navigator = useNavigation<AppNavigatorRoutesProps>();
 
-  function handleOpenExerciseDetails() {
-    navigator.navigate('exercise');
+  function handleOpenExerciseDetails(exerciseId: string) {
+    navigator.navigate('exercise', { exerciseId });
   }
 
   const fetchExercisesByGroup = useCallback(() => {
@@ -125,7 +125,10 @@ export function Home() {
             data={exercises}
             keyExtractor={item => item.id}
             renderItem={({ item }) => (
-              <ExerciseCard onPress={handleOpenExerciseDetails} data={item} />
+              <ExerciseCard
+                onPress={() => handleOpenExerciseDetails(item.id)}
+                data={item}
+              />
             )}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.contentContainerExercises}
